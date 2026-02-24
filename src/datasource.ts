@@ -21,7 +21,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     this.baseUrl = instanceSettings.url!;
   }
 
-  getDefaultVariables?(): VariableKind[] {
+  async getDefaultVariables?(): Promise<VariableKind[]> {
     return [
       {
         kind: 'CustomVariable' as const,
@@ -67,7 +67,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     ];
   }
 
-  getDefaultLinks?(): DashboardLink[] {
+  async getDefaultLinks?(): Promise<DashboardLink[]> {
     return [
       {
         title: 'Grafana Documentation (default)',
@@ -80,6 +80,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
         asDropdown: false,
         includeVars: false,
         keepTime: false,
+        placement: 'inControlsMenu',
       },
     ];
   }
