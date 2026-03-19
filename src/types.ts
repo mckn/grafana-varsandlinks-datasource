@@ -24,6 +24,8 @@ export interface DataSourceResponse {
  */
 export interface MyDataSourceOptions extends DataSourceJsonData {
   path?: string;
+  timeout?: number;
+  error?: boolean;
 }
 
 /**
