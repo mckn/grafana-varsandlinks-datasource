@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { InlineField, Input, SecretInput } from '@grafana/ui';
+import { InlineField, Input, SecretInput, Switch } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { MyDataSourceOptions, MySecureJsonData } from '../types';
 
@@ -25,6 +25,26 @@ export function ConfigEditor(props: Props) {
       ...options,
       secureJsonData: {
         apiKey: event.target.value,
+      },
+    });
+  };
+
+  const onTimeoutChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onOptionsChange({
+      ...options,
+      jsonData: {
+        ...jsonData,
+        timeout: parseFloat(event.target.value) || undefined,
+      },
+    });
+  };
+
+  const onErrorChange = () => {
+    onOptionsChange({
+      ...options,
+      jsonData: {
+        ...jsonData,
+        error: !jsonData.error,
       },
     });
   };
@@ -64,6 +84,23 @@ export function ConfigEditor(props: Props) {
           width={40}
           onReset={onResetAPIKey}
           onChange={onAPIKeyChange}
+        />
+      </InlineField>
+      <InlineField label="Timeout (s)" labelWidth={14} interactive tooltip={'Artificial delay in seconds before returning default variables and links'}>
+        <Input
+          id="config-editor-timeout"
+          type="number"
+          onChange={onTimeoutChange}
+          value={jsonData.timeout ?? ''}
+          placeholder="Timeout in seconds"
+          width={40}
+        />
+      </InlineField>
+      <InlineField label="Simulate error" labelWidth={14} interactive tooltip={'Throw an error instead of returning default variables and links'}>
+        <Switch
+          id="config-editor-error"
+          value={jsonData.error ?? false}
+          onChange={onErrorChange}
         />
       </InlineField>
     </>

@@ -15,13 +15,28 @@ import { lastValueFrom } from 'rxjs';
 
 export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
   baseUrl: string;
+  timeout: number;
+  error: boolean;
 
   constructor(instanceSettings: DataSourceInstanceSettings<MyDataSourceOptions>) {
     super(instanceSettings);
     this.baseUrl = instanceSettings.url!;
+    this.timeout = instanceSettings.jsonData.timeout ?? 0;
+    this.error = instanceSettings.jsonData.error ?? false;
+  }
+
+  private delay(): Promise<void> {
+    if (!this.timeout) {
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => setTimeout(resolve, this.timeout * 1000));
   }
 
   async getDefaultVariables?(): Promise<VariableKind[]> {
+    await this.delay();
+    if (this.error) {
+      throw new Error('Simulated datasource error');
+    }
     return [
       {
         kind: 'CustomVariable' as const,
@@ -68,6 +83,10 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
   }
 
   async getDefaultLinks?(): Promise<DashboardLink[]> {
+    await this.delay();
+    if (this.error) {
+      throw new Error('Simulated datasource error');
+    }
     return [
       {
         title: 'Grafana Documentation (default)',
